@@ -1,0 +1,124 @@
+class OperacionesMatrices:
+
+    def __init__(self):
+        self.matrizA = []
+        self.matrizB = []
+        self.vector = []
+        self.resultado = None
+
+    def suma_matrices(self):
+        filas = len(self.matrizA)
+        columnas = len(self.matrizA[0])
+
+        self.resultado = []
+
+        for i in range(filas):
+            fila = []
+            for j in range(columnas):
+                fila.append(self.matrizA[i][j] + self.matrizB[i][j])
+            self.resultado.append(fila)
+
+    def producto_matrices(self):
+        filasA = len(self.matrizA)
+        columnasA = len(self.matrizA[0])
+        columnasB = len(self.matrizB[0])
+
+        self.resultado = []
+
+        for i in range(filasA):
+            fila = []
+
+            for j in range(columnasB):
+                suma = 0
+
+                for k in range(columnasA):
+                    suma += self.matrizA[i][k] * self.matrizB[k][j]
+
+                fila.append(suma)
+
+            self.resultado.append(fila)
+
+    def inversa_matriz(self):
+        n = len(self.matrizA)
+
+        # Crear matriz aumentada [A | I]
+        aumentada = []
+
+        for i in range(n):
+            fila = []
+
+            for j in range(n):
+                fila.append(float(self.matrizA[i][j]))
+
+            for j in range(n):
+                if i == j:
+                    fila.append(1.0)
+                else:
+                    fila.append(0.0)
+
+            aumentada.append(fila)
+
+        # Método de Gauss-Jordan
+        for i in range(n):
+
+            # Buscar un pivote diferente de cero
+            if aumentada[i][i] == 0:
+
+                fila_intercambio = -1
+
+                for k in range(i + 1, n):
+                    if aumentada[k][i] != 0:
+                        fila_intercambio = k
+                        break
+
+                if fila_intercambio == -1:
+                    self.resultado = None
+                    return
+
+                aumentada[i], aumentada[fila_intercambio] = (
+                    aumentada[fila_intercambio],
+                    aumentada[i]
+                )
+
+            # Convertir el pivote en 1
+            pivote = aumentada[i][i]
+
+            for j in range(2 * n):
+                aumentada[i][j] = aumentada[i][j] / pivote
+
+            # Hacer ceros en la columna
+            for k in range(n):
+
+                if k != i:
+                    factor = aumentada[k][i]
+
+                    for j in range(2 * n):
+                        aumentada[k][j] -= factor * aumentada[i][j]
+
+        # Extraer la inversa
+        self.resultado = []
+
+        for i in range(n):
+            fila = []
+
+            for j in range(n, 2 * n):
+                fila.append(aumentada[i][j])
+
+            self.resultado.append(fila)
+
+    def producto_matriz_vector(self):
+        filas = len(self.matrizA)
+        columnas = len(self.matrizA[0])
+
+        self.resultado = []
+
+        for i in range(filas):
+            suma = 0
+
+            for j in range(columnas):
+                suma += self.matrizA[i][j] * self.vector[j]
+
+            self.resultado.append(suma)
+
+    def get_resultado(self):
+        return self.resultado
